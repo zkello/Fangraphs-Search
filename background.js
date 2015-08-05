@@ -87,16 +87,11 @@ chrome.omnibox.onInputChanged.addListener(function(text, suggest) {
 			}
 			for(var i = 0; i < num; i++){
 				results.push({
-					content: data[1][i],
-					description: data[1][i]
+					content: data[i],
+					description: data[i]
 				});
 			}
-			if (localStorage.getItem("shortcut") === "on") {
-				results.push({
-					content: "settings",
-					description: "Open Fangraphs Search options"
-				});
-			}
+
 			suggest(results);
 		});
 	} else {
@@ -129,15 +124,28 @@ chrome.omnibox.onInputCancelled.addListener(function() {
 
 
 function suggests(query, callback) {
-	var language = localStorage["language"];
-	var protocol = localStorage["protocol"];
 	var req = new XMLHttpRequest();
 
 	req.open("GET","http://www.fangraphs.com/quickplayersearch.aspx?name=" + query, true);
 	req.onload = function(){
 		if(this.status == 200){
 			try{
-				callback(JSON.parse(this.responseText));
+				var page = document.createElement( 'html' );
+				page.innerHTML = this.responseText;
+				var links = page.getElementsByTagName('a');
+				var names = [];
+				var index;
+				for (index = 0; index < 6; index++){
+					names.push(links[index].childNodes[0].textContent);
+				}
+				callback(names);
+				//callback(JSON.stringify(names));
+
+				//var tables = page.getElementsByClassName('search');
+				//tables.forEach(function(table){
+				//	table.getElementsByTagName('a')
+				//});
+				//callback(JSON.parse(this.responseText));
 			}catch(e){
 				this.onerror();
 			}
@@ -152,12 +160,10 @@ function suggests(query, callback) {
 };
 
 chrome.omnibox.onInputEntered.addListener(function(text) {
-	var language = localStorage["language"];
-	var protocol = localStorage["protocol"];
 	if (text == "settings") {
 		chrome.tabs.update(null, {url: chrome.extension.getURL('settings.html')});
 	} else {
-		chrome.tabs.update(null, {url: protocol + language + ".wikipedia.org/w/index.php?search=" + text});
+		chrome.tabs.update(null, {url: "http://" + "www.fangraphs.com/players.aspx?lastname=" + text});
 	}
 });
 
