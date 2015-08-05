@@ -1,0 +1,31 @@
+{
+  "manifest_version": 2,
+  "name": "Fangraphs Search",
+  "version": "6.4",
+  "author": "Corbin Davenport",
+  "homepage_url": "https://github.com/corbindavenport/wikipedia-search",
+  "description": "Search Fangraphs from the address bar.",
+  "options_page": "settings.html",
+  "omnibox": {
+	"keyword": "wiki"
+  },
+  "web_accessible_resources": [
+	"settings.html"
+  ],
+  "permissions": [
+	"contextMenus",
+	"http://*.wikipedia.org/*",
+	"https://*.wikipedia.org/*",
+	"http://www.fangraphs.com/*",
+	"https://www.fangraphs.com/*"
+  ],
+  "background": {
+	"scripts": ["background.js"]
+  },
+  "icons":{
+	"16":"icon16.png",
+	"32":"icon32.png",
+	"48":"icon48.png",
+	"128":"icon128.png"
+  }
+}
