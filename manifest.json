@@ -5,7 +5,6 @@
   "author": "Zachary Kellicutt",
   "homepage_url": "https://github.com/zkello/fangraphs-search",
   "description": "Search Fangraphs from the address bar or by right clicking",
-  "options_page": "settings.html",
   "omnibox": {
 	"keyword": "fg"
   },

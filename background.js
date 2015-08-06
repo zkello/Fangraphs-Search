@@ -6,20 +6,7 @@
  You should have received a copy of the GNU General Public License along with this program. If not, see http://www.gnu.org/licenses/.
  */
 
-
-/*chrome.extension.onMessageExternal.addListener(function (request, sender, sendResponse) {
-	if ( request === "mgmiemnjjchgkmgbeljfocdjjnpjnmcg-poke" ) {
-		chrome.extension.sendMessage(
-			sender.id, {
-				head: "mgmiemnjjchgkmgbeljfocdjjnpjnmcg-pokeback",
-				body: info,
-			});
-	}
-});
-*/
-
 // Context Menu Search
-
 chrome.contextMenus.create({
 	title: "Search \"%s\" on Fangraphs",
 	contexts: ["selection"],
@@ -46,11 +33,6 @@ chrome.omnibox.onInputChanged.addListener(function(text, suggest) {
 	if(text.length > 0){
 		currentRequest = suggests(text, function(data) {
 			var results = [];
-			console.log('data.length = ' + data.length);
-			console.log('lastFirstResult = ' + firstResult);
-			if (data[0] == firstResult) {
-				console.log('data[0] == lastFirstResult');
-			}
 			firstResult = data[0];
 			if (data.length < 5) {
 				num = data.length;
@@ -59,13 +41,11 @@ chrome.omnibox.onInputChanged.addListener(function(text, suggest) {
 			}
 			updateDefaultSuggestion(data[0]);
 			for (var i = 1; i < num; i++) {
-				console.log('data[' + i + '] = ' +data[i]);
 				results.push({
 					content: data[i],
 					description: data[i]
 				});
 			}
-
 			suggest(results);
 		});
 	} else {
@@ -85,7 +65,7 @@ var searchLabel = chrome.i18n.getMessage('search_label');
 
 function updateDefaultSuggestion(text) {
 	chrome.omnibox.setDefaultSuggestion({
-		description: text//searchLabel + 'Search on Fangraphs: %s'
+		description: text
 	});
 
 };
@@ -117,10 +97,6 @@ function suggests(query, callback) {
 						names.push(links[index].childNodes[0].textContent);
 					}
 				}
-
-				//var links = page.getElementsByTagName('a');
-
-
 				callback(names);
 
 			}catch(e){
@@ -144,12 +120,3 @@ chrome.omnibox.onInputEntered.addListener(function(text) {
 		chrome.tabs.update(null, {url: "http://" + "www.fangraphs.com/players.aspx?lastname=" + text});
 	}
 });
-
- /*
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-	if (request.method == "getLocalStorage")
-		sendResponse({data: localStorage[request.key]});
-	else
-		sendResponse({}); // snub them.
-});
-	*/
