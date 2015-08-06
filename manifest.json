@@ -1,21 +1,19 @@
 {
   "manifest_version": 2,
   "name": "Fangraphs Search",
-  "version": "6.4",
-  "author": "Corbin Davenport",
-  "homepage_url": "https://github.com/corbindavenport/wikipedia-search",
-  "description": "Search Fangraphs from the address bar.",
+  "version": "0.1",
+  "author": "Zachary Kellicutt",
+  "homepage_url": "https://github.com/zkello/fangraphs-search",
+  "description": "Search Fangraphs from the address bar or by right clicking",
   "options_page": "settings.html",
   "omnibox": {
-	"keyword": "wiki"
+	"keyword": "fg"
   },
   "web_accessible_resources": [
 	"settings.html"
   ],
   "permissions": [
 	"contextMenus",
-	"http://*.wikipedia.org/*",
-	"https://*.wikipedia.org/*",
 	"http://www.fangraphs.com/*",
 	"https://www.fangraphs.com/*"
   ],

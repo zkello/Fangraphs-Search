@@ -6,40 +6,6 @@
  You should have received a copy of the GNU General Public License along with this program. If not, see http://www.gnu.org/licenses/.
  */
 
-// Check for settings & version
-
-chrome.runtime.onInstalled.addListener(function(details){
-	if(details.reason == "update" || "install"){
-		if (localStorage.getItem("language") === null) {
-			localStorage["language"] = "en";
-		}
-		if (localStorage.getItem("protocol") === null) {
-			localStorage["protocol"] = "https://";
-		}
-		if (localStorage.getItem("donation") === null) {
-			localStorage["donation"] = "yes";
-		}
-		if (localStorage.getItem("shortcut") === null) {
-			if ((window.navigator.userAgent.indexOf("OPR") > -1) === false) {
-				localStorage["shortcut"] = "on";
-			} else {
-				// Shortcut to options is not functional on Opera, possibly a bug
-				localStorage["shortcut"] = "off";
-			}
-		}
-		if (localStorage.getItem("contentscripts") === null) {
-			localStorage["contentscripts"] = "on";
-		}
-		if (localStorage.getItem("hidesearch") === null) {
-			localStorage["hidesearch"] = "off";
-		}
-	}
-	if(localStorage.getItem("version") != chrome.runtime.getManifest().version){
-		chrome.tabs.create({'url': chrome.extension.getURL('welcome.html')});
-		localStorage["version"] = chrome.runtime.getManifest().version;
-	}
-});
-
 
 chrome.extension.onMessageExternal.addListener(function (request, sender, sendResponse) {
 	if ( request === "mgmiemnjjchgkmgbeljfocdjjnpjnmcg-poke" ) {
