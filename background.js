@@ -41,13 +41,13 @@ chrome.omnibox.onInputChanged.addListener(function(text, suggest) {
 		currentRequest = null;
 	}
 
-	updateDefaultSuggestion(text);
+	//updateDefaultSuggestion(text);
 
 	if(text.length > 0){
 		currentRequest = suggests(text, function(data) {
 			var results = [];
-			if (localStorage.getItem("shortcut") === "on") {
-				num = 4;
+			if (data.length < 5) {
+				num = data.length;
 			} else {
 				num = 5;
 			}
@@ -72,8 +72,10 @@ function resetDefaultSuggestion() {
 };
 
 resetDefaultSuggestion();
+
 var searchLabel = chrome.i18n.getMessage('search_label');
-function updateDefaultSuggestion(text) {
+
+/*function updateDefaultSuggestion(text) {
 	chrome.omnibox.setDefaultSuggestion({
 		description: searchLabel + 'Search on Fangraphs: %s'
 	});
@@ -83,7 +85,7 @@ function updateDefaultSuggestion(text) {
 chrome.omnibox.onInputStarted.addListener(function() {
 	updateDefaultSuggestion('');
 });
-
+*/
 chrome.omnibox.onInputCancelled.addListener(function() {
 	resetDefaultSuggestion();
 });
