@@ -7,7 +7,7 @@
  */
 
 
-chrome.extension.onMessageExternal.addListener(function (request, sender, sendResponse) {
+/*chrome.extension.onMessageExternal.addListener(function (request, sender, sendResponse) {
 	if ( request === "mgmiemnjjchgkmgbeljfocdjjnpjnmcg-poke" ) {
 		chrome.extension.sendMessage(
 			sender.id, {
@@ -16,6 +16,7 @@ chrome.extension.onMessageExternal.addListener(function (request, sender, sendRe
 			});
 	}
 });
+*/
 
 // Context Menu Search
 
@@ -32,6 +33,7 @@ chrome.contextMenus.create({
 // Derived from OmniWiki (github.com/hamczu/OmniWiki)
 
 var currentRequest = null;
+var firstResult = '';
 
 chrome.omnibox.onInputChanged.addListener(function(text, suggest) {
 
@@ -41,17 +43,23 @@ chrome.omnibox.onInputChanged.addListener(function(text, suggest) {
 		currentRequest = null;
 	}
 
-	//updateDefaultSuggestion(text);
-
 	if(text.length > 0){
 		currentRequest = suggests(text, function(data) {
 			var results = [];
+			console.log('data.length = ' + data.length);
+			console.log('lastFirstResult = ' + firstResult);
+			if (data[0] == firstResult) {
+				console.log('data[0] == lastFirstResult');
+			}
+			firstResult = data[0];
 			if (data.length < 5) {
 				num = data.length;
 			} else {
 				num = 5;
 			}
-			for(var i = 0; i < num; i++){
+			updateDefaultSuggestion(data[0]);
+			for (var i = 1; i < num; i++) {
+				console.log('data[' + i + '] = ' +data[i]);
 				results.push({
 					content: data[i],
 					description: data[i]
@@ -75,9 +83,9 @@ resetDefaultSuggestion();
 
 var searchLabel = chrome.i18n.getMessage('search_label');
 
-/*function updateDefaultSuggestion(text) {
+function updateDefaultSuggestion(text) {
 	chrome.omnibox.setDefaultSuggestion({
-		description: searchLabel + 'Search on Fangraphs: %s'
+		description: text//searchLabel + 'Search on Fangraphs: %s'
 	});
 
 };
@@ -85,7 +93,7 @@ var searchLabel = chrome.i18n.getMessage('search_label');
 chrome.omnibox.onInputStarted.addListener(function() {
 	updateDefaultSuggestion('');
 });
-*/
+
 chrome.omnibox.onInputCancelled.addListener(function() {
 	resetDefaultSuggestion();
 });
@@ -100,20 +108,21 @@ function suggests(query, callback) {
 			try{
 				var page = document.createElement( 'html' );
 				page.innerHTML = this.responseText;
-				var links = page.getElementsByTagName('a');
+				var minorMajor = page.getElementsByClassName('search');
 				var names = [];
-				var index;
-				for (index = 0; index < 6; index++){
-					names.push(links[index].childNodes[0].textContent);
+				var i;
+				for(i = 0; i < minorMajor.length; i++){
+					var links = minorMajor[i].getElementsByTagName('a');
+					for (index = 0; index < links.length; index++){
+						names.push(links[index].childNodes[0].textContent);
+					}
 				}
-				callback(names);
-				//callback(JSON.stringify(names));
 
-				//var tables = page.getElementsByClassName('search');
-				//tables.forEach(function(table){
-				//	table.getElementsByTagName('a')
-				//});
-				//callback(JSON.parse(this.responseText));
+				//var links = page.getElementsByTagName('a');
+
+
+				callback(names);
+
 			}catch(e){
 				this.onerror();
 			}
@@ -127,6 +136,7 @@ function suggests(query, callback) {
 	req.send();
 };
 
+//On Enter press, goes to fangraphs site
 chrome.omnibox.onInputEntered.addListener(function(text) {
 	if (text == "settings") {
 		chrome.tabs.update(null, {url: chrome.extension.getURL('settings.html')});
@@ -135,9 +145,11 @@ chrome.omnibox.onInputEntered.addListener(function(text) {
 	}
 });
 
+ /*
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 	if (request.method == "getLocalStorage")
 		sendResponse({data: localStorage[request.key]});
 	else
 		sendResponse({}); // snub them.
 });
+	*/
