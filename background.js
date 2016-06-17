@@ -117,6 +117,10 @@ chrome.omnibox.onInputEntered.addListener(function(text) {
 	if (text == "settings") {
 		chrome.tabs.update(null, {url: chrome.extension.getURL('settings.html')});
 	} else {
-		chrome.tabs.update(null, {url: "http://" + "www.fangraphs.com/players.aspx?lastname=" + text});
+		if (firstResult.indexOf(text) > -1) {
+			chrome.tabs.update(null, {url: "http://" + "www.fangraphs.com/players.aspx?lastname=" + firstResult});
+		} else {
+			chrome.tabs.update(null, {url: "http://" + "www.fangraphs.com/players.aspx?lastname=" + text});
+		}
 	}
 });
