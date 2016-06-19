@@ -11,7 +11,7 @@ chrome.contextMenus.create({
 	title: "Search \"%s\" on Fangraphs",
 	contexts: ["selection"],
 	onclick: function searchText(info){
-		var url = encodeURI("http://" + "www.fangraphs.com/players.aspx?lastname=" + info.selectionText);
+		var url = encodeURI(FANGRAPHS_SEARCH + info.selectionText);
 		chrome.tabs.create({url: url});
 	}
 });
@@ -19,6 +19,8 @@ chrome.contextMenus.create({
 // Omnibox Search
 // Derived from OmniWiki (github.com/hamczu/OmniWiki)
 
+const FANGRAPHS_HOME = "http://www.fangraphs.com";
+const FANGRAPHS_SEARCH = "http://www.fangraphs.com/players.aspx?lastname=";
 var currentRequest = null;
 var firstResult = '';
 
@@ -31,19 +33,19 @@ chrome.omnibox.onInputChanged.addListener(function(text, suggest) {
 	}
 
 	if(text.length > 0){
-		currentRequest = suggests(text, function(data) {
+		currentRequest = suggests(text, function(names, urls) {
 			var results = [];
-			firstResult = data[0];
-			if (data.length < 5) {
-				num = data.length;
+			firstResult = FANGRAPHS_HOME + urls[0];
+			if (names.length < 5) {
+				num = names.length;
 			} else {
 				num = 5;
 			}
-			updateDefaultSuggestion(data[0]);
+			updateDefaultSuggestion(names[0]);
 			for (var i = 1; i < num; i++) {
 				results.push({
-					content: data[i],
-					description: data[i]
+					content: FANGRAPHS_HOME + urls[i],
+					description: names[i]
 				});
 			}
 			suggest(results);
@@ -52,32 +54,6 @@ chrome.omnibox.onInputChanged.addListener(function(text, suggest) {
 	}
 
 });
-
-function resetDefaultSuggestion() {
-	chrome.omnibox.setDefaultSuggestion({
-		description: ' '
-	});
-};
-
-resetDefaultSuggestion();
-
-var searchLabel = chrome.i18n.getMessage('search_label');
-
-function updateDefaultSuggestion(text) {
-	chrome.omnibox.setDefaultSuggestion({
-		description: text
-	});
-
-};
-
-chrome.omnibox.onInputStarted.addListener(function() {
-	updateDefaultSuggestion('');
-});
-
-chrome.omnibox.onInputCancelled.addListener(function() {
-	resetDefaultSuggestion();
-});
-
 
 function suggests(query, callback) {
 	var req = new XMLHttpRequest();
@@ -90,14 +66,16 @@ function suggests(query, callback) {
 				page.innerHTML = this.responseText;
 				var minorMajor = page.getElementsByClassName('search');
 				var names = [];
+				var urls = [];
 				var i;
 				for(i = 0; i < minorMajor.length; i++){
 					var links = minorMajor[i].getElementsByTagName('a');
 					for (index = 0; index < links.length; index++){
 						names.push(links[index].childNodes[0].textContent);
+						urls.push(links[index].getAttribute('href'));
 					}
 				}
-				callback(names);
+				callback(names, urls);
 
 			}catch(e){
 				this.onerror();
@@ -117,10 +95,33 @@ chrome.omnibox.onInputEntered.addListener(function(text) {
 	if (text == "settings") {
 		chrome.tabs.update(null, {url: chrome.extension.getURL('settings.html')});
 	} else {
-		if (firstResult.indexOf(text) > -1) {
-			chrome.tabs.update(null, {url: "http://" + "www.fangraphs.com/players.aspx?lastname=" + firstResult});
+		if (text.indexOf("http://") > -1) {
+			chrome.tabs.update(null, {url: text});
+		} else if (firstResult.indexOf("undefined") < 0) {
+			chrome.tabs.update(null, {url: firstResult});
 		} else {
-			chrome.tabs.update(null, {url: "http://" + "www.fangraphs.com/players.aspx?lastname=" + text});
+			chrome.tabs.update(null, {url: FANGRAPHS_SEARCH + text});
 		}
 	}
+});
+
+function resetDefaultSuggestion() {
+	chrome.omnibox.setDefaultSuggestion({
+		description: ' '
+	});
+};
+
+function updateDefaultSuggestion(text) {
+	chrome.omnibox.setDefaultSuggestion({
+		description: text
+	});
+
+};
+
+chrome.omnibox.onInputStarted.addListener(function() {
+	resetDefaultSuggestion();
+});
+
+chrome.omnibox.onInputCancelled.addListener(function() {
+	resetDefaultSuggestion();
 });
