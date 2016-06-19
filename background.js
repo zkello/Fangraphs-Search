@@ -22,7 +22,7 @@ chrome.contextMenus.create({
 const FANGRAPHS_HOME = "http://www.fangraphs.com";
 const FANGRAPHS_SEARCH = "http://www.fangraphs.com/players.aspx?lastname=";
 var currentRequest = null;
-var firstResult = '';
+var firstResult = FANGRAPHS_HOME;
 
 chrome.omnibox.onInputChanged.addListener(function(text, suggest) {
 
@@ -35,7 +35,9 @@ chrome.omnibox.onInputChanged.addListener(function(text, suggest) {
 	if(text.length > 0){
 		currentRequest = suggests(text, function(names, urls) {
 			var results = [];
-			firstResult = FANGRAPHS_HOME + urls[0];
+			if (urls[0].indexOf("undefined") < 0) {
+				firstResult = FANGRAPHS_HOME + urls[0];
+			}
 			if (names.length < 5) {
 				num = names.length;
 			} else {
