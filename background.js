@@ -43,9 +43,9 @@ chrome.omnibox.onInputChanged.addListener(function(text, suggest) {
 			} else {
 				limit = 5;
 			}
-
-			updateDefaultSuggestion(names[0]);
-			for (var i = 1; i < limit; i++) {
+			// TODO: Add this back in once bug 1332942 in firefox is fixed
+			// updateDefaultSuggestion(names[0]);
+			for (var i = 0; i < limit; i++) {
 				results.push({
 					content: FANGRAPHS_HOME + urls[i],
 					description: names[i]
@@ -110,7 +110,7 @@ chrome.omnibox.onInputEntered.addListener(function(text) {
 
 function resetDefaultSuggestion() {
 	chrome.omnibox.setDefaultSuggestion({
-		description: ' '
+		description: 'Fangraphs Search'
 	});
 };
 
