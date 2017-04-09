@@ -35,16 +35,17 @@ chrome.omnibox.onInputChanged.addListener(function(text, suggest) {
 	if(text.length > 0){
 		currentRequest = suggests(text, function(names, urls) {
 			var results = [];
-			if (urls[0].indexOf("undefined") < 0) {
+			if (isURLDefined(urls[0])) {
 				firstResult = FANGRAPHS_HOME + urls[0];
 			}
 			if (names.length < 5) {
-				num = names.length;
+				limit = names.length;
 			} else {
-				num = 5;
+				limit = 5;
 			}
+
 			updateDefaultSuggestion(names[0]);
-			for (var i = 1; i < num; i++) {
+			for (var i = 1; i < limit; i++) {
 				results.push({
 					content: FANGRAPHS_HOME + urls[i],
 					description: names[i]
@@ -99,7 +100,7 @@ chrome.omnibox.onInputEntered.addListener(function(text) {
 	} else {
 		if (text.indexOf("http://") > -1) {
 			chrome.tabs.update(null, {url: text});
-		} else if (firstResult.indexOf("undefined") < 0) {
+		} else if (isURLDefined(firstResult)) {
 			chrome.tabs.update(null, {url: firstResult});
 		} else {
 			chrome.tabs.update(null, {url: FANGRAPHS_SEARCH + text});
@@ -119,6 +120,10 @@ function updateDefaultSuggestion(text) {
 	});
 
 };
+
+function isURLDefined(text) {
+	return text.indexOf("undefined") < 0
+}
 
 chrome.omnibox.onInputStarted.addListener(function() {
 	resetDefaultSuggestion();
