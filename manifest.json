@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Fangraphs Search",
-  "version": "1.1",
+  "version": "1.2",
   "author": "Zachary Kellicutt",
   "homepage_url": "https://github.com/zkello/fangraphs-search",
   "description": "Search Fangraphs from the address bar or by right clicking",
