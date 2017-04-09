@@ -1,6 +1,6 @@
 # Fangraphs-Search
 
-Chrome Extension inspired by https://github.com/corbindavenport/wikipedia-search
+Chrome and Firefox WebExtension for searching fangraphs.com
 
 Search Fangraphs one of two ways:
 
@@ -8,4 +8,7 @@ Search Fangraphs one of two ways:
 
 2) By right clicking on a highlighted player's name
 
-Install it on chrome here: https://chrome.google.com/webstore/detail/fangraphs-search/mpblbhnonmpepcjfemdenoonpdinfkgj
+Install it on Chrome [here](https://chrome.google.com/webstore/detail/fangraphs-search/mpblbhnonmpepcjfemdenoonpdinfkgj).  
+Install it on Firefox [here](https://addons.mozilla.org/en-US/firefox/addon/fangraphs-search/).
+
+Inspired by https://github.com/corbindavenport/wikipedia-search
