@@ -8,9 +8,6 @@
   "omnibox": {
 	"keyword": "fg"
   },
-  "web_accessible_resources": [
-	"settings.html"
-  ],
   "permissions": [
 	"contextMenus",
 	"http://www.fangraphs.com/*",
